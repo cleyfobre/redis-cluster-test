@@ -1,3 +1,23 @@
+### 2025.02.04 Update
+
+#### 목차
+1. 클러스터는 정상 작동 된다.
+2. Spring Boot에서 정상 연동 된다. 근데 안된다.(응?)
+3. 삽질했던 이유
+4. 로컬용 Redis Cluster는 docker-compose를 따로 만들어야 한다.(뭐 근데 원래 그런거였잖아...)
+
+---
+
+#### 클러스터는 정상 작동 된다.
+
+정상 작동하는 파일인 `redis-cluster-docker-compose2.yml`를 참고하자.
+
+#### Spring Boot에서 정상 연동 된다. 근데 안된다.(응?)
+
+
+
+---
+
 ### docoker-compose 파일 설정
 
 #### 컨테이너 외부에서 접근
@@ -140,5 +160,4 @@ docker exec -it webtoon-redis-7006-1 redis-cli -p 7006 cluster meet 172.23.0.3 7
 OK
 docker exec -it webtoon-redis-7006-1 redis-cli -p 7006 cluster replicate  ee67696f107713b2e89251266533022f73553ef5
 ```
-
 
