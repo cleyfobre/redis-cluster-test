@@ -1,0 +1,153 @@
+version: '3.8'
+
+services:
+  redis-node-7100:
+    image: redis:7.0
+    container_name: redis-node-7100
+    # hostname: redis-node-7100
+    command: >
+      redis-server --port 7100
+      --cluster-enabled yes
+      --cluster-config-file nodes.conf
+      --cluster-node-timeout 5000
+      --appendonly yes
+      --cluster-announce-ip redis-node-7100
+      --cluster-announce-port 7100
+      --cluster-announce-bus-port 17100
+    ports:
+      - "7100:7100"
+    networks:
+      - homework-net
+    volumes:
+      - redis7100_data:/data
+
+  redis-node-7101:
+    image: redis:7.0
+    container_name: redis-node-7101
+    # hostname: redis-node-7101
+    command: >
+      redis-server --port 7101
+      --cluster-enabled yes
+      --cluster-config-file nodes.conf
+      --cluster-node-timeout 5000
+      --appendonly yes
+      --cluster-announce-ip redis-node-7101
+      --cluster-announce-port 7101
+      --cluster-announce-bus-port 17101
+    ports:
+      - "7101:7101"
+    networks:
+      - homework-net
+    volumes:
+      - redis7101_data:/data
+
+  redis-node-7102:
+    image: redis:7.0
+    container_name: redis-node-7102
+    # hostname: redis-node-7102
+    command: >
+      redis-server --port 7102
+      --cluster-enabled yes
+      --cluster-config-file nodes.conf
+      --cluster-node-timeout 5000
+      --appendonly yes
+      --cluster-announce-ip redis-node-7102
+      --cluster-announce-port 7102
+      --cluster-announce-bus-port 17102
+    ports:
+      - "7102:7102"
+    networks:
+      - homework-net
+    volumes:
+      - redis7102_data:/data
+
+  redis-node-7103:
+    image: redis:7.0
+    container_name: redis-node-7103
+    # hostname: redis-node-7103
+    command: >
+      redis-server --port 7103
+      --cluster-enabled yes
+      --cluster-config-file nodes.conf
+      --cluster-node-timeout 5000
+      --appendonly yes
+      --cluster-announce-ip redis-node-7103
+      --cluster-announce-port 7103
+      --cluster-announce-bus-port 17103
+    ports:
+      - "7103:7103"
+    networks:
+      - homework-net
+    volumes:
+      - redis7103_data:/data
+
+  redis-node-7104:
+    image: redis:7.0
+    container_name: redis-node-7104
+    # hostname: redis-node-7104
+    command: >
+      redis-server --port 7104
+      --cluster-enabled yes
+      --cluster-config-file nodes.conf
+      --cluster-node-timeout 5000
+      --appendonly yes
+      --cluster-announce-ip redis-node-7104
+      --cluster-announce-port 7104
+      --cluster-announce-bus-port 17104
+    ports:
+      - "7104:7104"
+    networks:
+      - homework-net
+    volumes:
+      - redis7104_data:/data
+
+  redis-node-7105:
+    image: redis:7.0
+    container_name: redis-node-7105
+    # hostname: redis-node-7105
+    command: >
+      redis-server --port 7105
+      --cluster-enabled yes
+      --cluster-config-file nodes.conf
+      --cluster-node-timeout 5000
+      --appendonly yes
+      --cluster-announce-ip redis-node-7105
+      --cluster-announce-port 7105
+      --cluster-announce-bus-port 17105
+    ports:
+      - "7105:7105"
+    networks:
+      - homework-net
+    volumes:
+      - redis7105_data:/data
+
+  cluster-creator:
+    image: redis:7.0
+    depends_on:
+      - redis-node-7100
+      - redis-node-7101
+      - redis-node-7102
+      - redis-node-7103
+      - redis-node-7104
+      - redis-node-7105
+    entrypoint: >
+      sh -c "sleep 5 &&
+      echo yes | redis-cli --cluster create
+      redis-node-7100:7100 redis-node-7101:7101 redis-node-7102:7102
+      redis-node-7103:7103 redis-node-7104:7104 redis-node-7105:7105
+      --cluster-replicas 1"
+    networks:
+      - homework-net
+  
+networks:
+  homework-net:
+    driver: bridge
+
+volumes:
+  db_data:
+  redis7100_data:
+  redis7101_data:
+  redis7102_data:
+  redis7103_data:
+  redis7104_data:
+  redis7105_data:
