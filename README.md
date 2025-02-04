@@ -55,7 +55,11 @@ redis-node-7103:7103 redis-node-7104:7104 redis-node-7105:7105
 - docker compose 파일 안에 각 노드마다 `--cluster-announce-ip`를 127.0.0.1로 하면 됨.
 - cluster-creator 서비스 안에 명령어 조합도 수정을 이런식으로 해야할 듯.
 
+<br/>
+
 ---
+
+# 2025.02.01 Init
 
 ### docoker-compose 파일 설정
 
