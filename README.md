@@ -3,22 +3,40 @@
 ## 📗 목차
 
 1. 클러스터는 정상 작동 된다.
-2. Spring Boot에서 정상 연동 된다. 근데 안된다.(응?)
-3. 삽질했던 이유
+2. 삽질했던 이유
+3. Spring Boot에서 정상 연동 된다. 근데 안된다.(응?)
 4. 로컬용 Redis Cluster는 docker-compose를 따로 만들어야 한다.(뭐 근데 원래 그런거였잖아...)
 
----
+<br/>
 
-## 😁 클러스터는 정상 작동 된다.
+## 😁 1. 클러스터는 정상 작동 된다.
 
-- 정상 작동하는 파일인 `redis-cluster-docker-compose2.yml`를 참고하자.
+- 정상 작동하는 파일인 `redis-cluster-docker-compose2.yml`를 참조하자.
 
-## 😅 Spring Boot에서 정상 연동 된다. 근데 안된다.(응?)
+## 👊🏻 2. 삽질했던 이유
 
-- 개발할 때에는 내 코드를 로컬에서 실행하면서 테스트를 한다. 
-- 하지만 `redis-cluster-docker-compose2.yml`를 보면
+- 클러스터는 애초에 docker-compose를 잘못 작성했던 것... 
+- 오히려 긴 삽질은 따로 있었음.
+- spring app에서 붙이려는데 로컬에서는 클러스터에 붙지만, 컨테이너에서는 안붙음.
+- 그래서 application.yml 자체에는 문제가 없다고 봤음. 그러나.
+- 로컬에서 잘 작동했던 이유는 원래 brew로 실행시켜놓은 redis에 붙어있던 것임.
+- 즉 application.yml 설정은 동작하지 않았고, 로컬에 있던 기본 6379에 붙으니 잘 되었던 것.
+- 문법을 아래와 같이 수정. 원래 `data:`가 없었음.
+
+```yml
+spring:
+  data:
+    redis:
+      cluster:
+        nodes: ...
+```
+
+## 😅 3. Spring Boot에서 정상 연동 된다. 근데 안된다.(응?)
+
+- 결론: 로컬에서 코드 실행할 때는 안된다는 의미임.
+- `redis-cluster-docker-compose2.yml`를 보면
 - Redis Cluster가 각 node의 announce된 주소를 `redis-node-7100`의 형식으로 가지고 있기 때문에
-- 로컬에서 아무리 127.0.0.1로 시도해도 연결이 될 수 없다. (아래 명령어를 말하는 거임...)
+- 로컬에서 아무리 127.0.0.1로 시도해도 `redis-node-7100` 형식으로 연결함. 그러니 연결이 될 수 없다. (아래 명령어를 말하는 거임...)
 
 ```
 redis-cli --cluster create
@@ -27,9 +45,15 @@ redis-node-7103:7103 redis-node-7104:7104 redis-node-7105:7105
 --cluster-replicas 1
 ```
 
-Q. 각 서비스마다 `--cluster-announce-ip redis-node-7100`를 추가해서 그런거 아님?
+- Q. 각 서비스마다 `--cluster-announce-ip redis-node-7100`를 추가해서 그런거 아님?
+- A. 응 맞음. 근데 상관 없음. 왜냐면 그걸 안해도 docker network의 내부IP값이 default임..
+- &nbsp; `redis-node-7100`로 안하다 뿐이지 172.x.x.x 같은 IP로 접근할테니 어차피 안됨.
+- Q. 그럼 어쩌라는 거임?
 
+## 🤨 4. 로컬용 Redis Cluster는 docker-compose를 따로 만들어야 한다.(뭐 근데 원래 그런거였잖아...)
 
+- docker compose 파일 안에 각 노드마다 `--cluster-announce-ip`를 127.0.0.1로 하면 됨.
+- cluster-creator 서비스 안에 명령어 조합도 수정을 이런식으로 해야할 듯.
 
 ---
 
