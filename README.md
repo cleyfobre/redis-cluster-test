@@ -1,18 +1,31 @@
-### 2025.02.04 Update
+# 2025.02.04 Update
 
-#### 목차
+## 📗 목차
+
 1. 클러스터는 정상 작동 된다.
 2. Spring Boot에서 정상 연동 된다. 근데 안된다.(응?)
 3. 삽질했던 이유
 4. 로컬용 Redis Cluster는 docker-compose를 따로 만들어야 한다.(뭐 근데 원래 그런거였잖아...)
 
----
-
-#### 클러스터는 정상 작동 된다.
+## 😁 클러스터는 정상 작동 된다.
 
 정상 작동하는 파일인 `redis-cluster-docker-compose2.yml`를 참고하자.
 
-#### Spring Boot에서 정상 연동 된다. 근데 안된다.(응?)
+## 😅 Spring Boot에서 정상 연동 된다. 근데 안된다.(응?)
+
+개발할 때에는 내 코드를 로컬에서 실행하면서 테스트를 한다. 
+하지만 `redis-cluster-docker-compose2.yml`를 보면
+Redis Cluster가 각 node의 announce된 주소를 `redis-node-7100`의 형식으로 가지고 있기 때문에
+로컬에서 아무리 127.0.0.1로 시도해도 연결이 될 수 없다. (아래 명령어를 말하는 거임...)
+
+```
+redis-cli --cluster create
+redis-node-7100:7100 redis-node-7101:7101 redis-node-7102:7102
+redis-node-7103:7103 redis-node-7104:7104 redis-node-7105:7105
+--cluster-replicas 1
+```
+
+Q. 각 서비스마다 `--cluster-announce-ip redis-node-7100`를 추가해서 그런거 아님?
 
 
 
